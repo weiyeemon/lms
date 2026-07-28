@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "title": "Concise task title",
+  "summary": "Observable outcome and why it is needed",
+  "sources": [
+    {
+      "type": "context",
+      "reference": "current user request",
+      "facts": ["Explicit requirement copied or faithfully paraphrased from the source"]
+    }
+  ],
+  "current_behavior": [],
+  "desired_behavior": ["Observable behavior the implementation must produce"],
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "behavior": "Observable behavior that must hold",
+      "verification": "Objective test, command, or inspection that proves it"
+    }
+  ],
+  "constraints": [],
+  "non_goals": [],
+  "assumptions": [],
+  "open_questions": []
+}

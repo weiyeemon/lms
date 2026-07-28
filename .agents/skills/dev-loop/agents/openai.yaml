@@ -1,0 +1,4 @@
+interface:
+  display_name: "Development Loop"
+  short_description: "Run a verified coder and reviewer loop"
+  default_prompt: "Use $dev-loop to implement this task through the coder and reviewer workflow."

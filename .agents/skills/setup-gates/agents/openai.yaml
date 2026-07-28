@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup Project Gates"
+  short_description: "Discover and configure verified project gates"
+  default_prompt: "Use $setup-gates to analyze this project and configure its dev-loop gates."

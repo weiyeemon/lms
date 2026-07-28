@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schema_version", "workflow_version", "max_review_iterations", "protected_branches", "feature_branch_template", "gates", "test_integrity"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "workflow_version": { "type": "string", "minLength": 1 },
+    "max_review_iterations": { "type": "integer", "minimum": 1 },
+    "protected_branches": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "feature_branch_template": { "type": "string", "minLength": 1 },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "command"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "command": { "type": "string", "minLength": 1 },
+          "timeout_seconds": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "test_integrity": {
+      "type": "object",
+      "required": ["paths", "allow_existing_test_changes"],
+      "properties": {
+        "paths": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "allow_existing_test_changes": { "type": "boolean" }
+      }
+    }
+  }
+}

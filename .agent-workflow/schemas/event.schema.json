@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["ts", "event", "iteration"],
+  "properties": {
+    "ts": { "type": "string", "minLength": 1 },
+    "event": {
+      "enum": ["session_start", "plan", "coder_dispatch", "coder_result", "gates", "reviewer_dispatch", "reviewer_verdict", "decision", "minor_fixes", "session_end"]
+    },
+    "iteration": { "type": ["integer", "null"], "minimum": 1 }
+  }
+}

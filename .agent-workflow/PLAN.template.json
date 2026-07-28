@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "session_id": "UTC-yyyyMMdd-HHmmss-task-slug",
+  "task": "Verbatim user task",
+  "status": "planned",
+  "branch": "feature/task-slug",
+  "baseline_commit": "full-git-object-id",
+  "started_at": "shell-generated ISO-8601 timestamp",
+  "updated_at": "shell-generated ISO-8601 timestamp",
+  "orchestrator": {
+    "product": "claude-or-codex",
+    "session_id": "optional-product-session-id"
+  },
+  "runtime": {
+    "coder_product": null,
+    "coder_thread_id": null
+  },
+  "acceptance_criteria": [],
+  "specification_path": "session-relative specification.json",
+  "workflow_version": "installed-workflow-version",
+  "gates": [],
+  "iteration": 0,
+  "iteration_limit": 4,
+  "blocking_findings": [],
+  "disputed_findings": [],
+  "minor_findings": [],
+  "next_action": "Run baseline gates"
+}
