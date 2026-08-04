@@ -45,3 +45,6 @@ next-env.d.ts
 # generated local analysis artifacts
 .codex-analysis/
 outputs/
+
+# supabase local runtime state
+supabase/.temp/
