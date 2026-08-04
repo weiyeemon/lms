@@ -10,9 +10,9 @@ if (!logPath || !eventPath) {
 
 const event = JSON.parse(await readFile(eventPath, 'utf8'));
 const allowedEvents = new Set([
-  'session_start', 'plan', 'coder_dispatch', 'coder_result', 'gates',
-  'reviewer_dispatch', 'reviewer_verdict', 'decision', 'minor_fixes',
-  'session_end',
+  'session_start', 'plan_proposal', 'plan_revision', 'plan_confirmation',
+  'plan', 'coder_dispatch', 'coder_result', 'gates', 'reviewer_dispatch',
+  'reviewer_verdict', 'decision', 'minor_fixes', 'session_end',
 ]);
 
 if (typeof event !== 'object' || event === null || Array.isArray(event)) {

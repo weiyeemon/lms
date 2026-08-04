@@ -2,6 +2,22 @@
 
 This document is the source of truth for both Claude and Codex adapters. One product orchestrates a session at a time. The orchestrator does not write product code during this workflow: a coder implements, the orchestrator runs objective gates, and a fresh reviewer audits each review round.
 
+## Activation
+
+Run this workflow only when the user explicitly invokes `$dev-loop` or `/dev-loop`, runs the managed `dev-loop` CLI, or unambiguously asks to run or use dev-loop by name. Do not activate it merely because an implementation task is non-trivial, references an issue, or would benefit from planning or review. Without an explicit invocation, do not create dev-loop artifacts or dispatch dev-loop agents.
+
+## Pre-loop plan and approval
+
+The plan phase is resumable session preparation, not the coder/reviewer loop. There are no separate draft and final-proposal phases. Before approval, do not run gates, spawn a coder or reviewer, modify product code, or treat silence or the initial invocation as permission to begin implementation.
+
+1. Read task sources, `SPECIFICATION.md`, project configuration, branch, clean-tree state, baseline commit, and the smallest relevant repository surface. Except for plan-session artifacts, this phase is read-only.
+2. Create the session and `plan.json` with status `awaiting_plan_approval`, then append `session_start`. Persist and show one complete, source-attributed plan containing the objective, scope, current and desired behavior, acceptance criteria with verification, constraints, non-goals, assumptions, configured gates, risks, and material questions. Append `plan_proposal`.
+3. Ask the user either to approve the displayed plan or provide amendments, then stop and wait. A managed CLI invocation must print the exact resume form: `dev-loop run --provider <provider> --resume <session-id> --task "<approval or amendments>"`.
+4. If the user provides amendments, incorporate all of them, resolve material questions, append `plan_revision`, remain in `awaiting_plan_approval`, display the revised complete plan once, and ask for approval or further amendments. A revision replaces the plan awaiting approval; it does not create a separate final-proposal phase.
+5. If the user cancels, set status to `aborted` and append `session_end`. One explicit approval of the currently displayed plan appends `plan_confirmation` with `confirmed: true`, changes status to `planned`, and immediately permits setup and the operational loop to start. Do not ask for another confirmation.
+
+Never infer approval from the original request, silence, a generic continuation request, or an ambiguous response.
+
 ## Constants and artifacts
 
 - Project configuration: `.dev-loop/config.json`.
@@ -22,11 +38,14 @@ node .agent-workflow/scripts/append-event.mjs <events.jsonl> <event.json>
 
 The script validates, serializes, and appends the event, preventing invalid JSON escapes. Obtain every timestamp from the shell. Update `plan.json` after every state transition so another Claude or Codex session can resume from artifacts alone.
 
-Every event contains `ts`, `event`, and `iteration` (`null` before and after the loop, otherwise a positive one-based integer). Add these payloads:
+Every event contains `ts`, `event`, and `iteration`. Use `null` for the pre-loop plan/setup events and `session_end`. The first coder round is iteration `1`; every event produced while that round is active uses `1`, including gate retries and the reviewer decision. Increment exactly once, immediately before dispatching review fixes to the coder, so the next round uses `2`. Persist the same active number in `plan.json.iteration`. Add these payloads:
 
 | Event | Required payload |
 |---|---|
 | `session_start` | user prompt, configuration, baseline commit, orchestrator product, and branch metadata |
+| `plan_proposal` | complete displayed plan, source references, assumptions, risks, material questions, and requested user action |
+| `plan_revision` | user direction, amendments applied, resolved questions, and the complete replacement plan displayed for approval |
+| `plan_confirmation` | `confirmed: true`, exact user approval, and the approved plan identity |
 | `plan` | exact source-attributed specification, baseline gate results, and planning notes |
 | `coder_dispatch` | spawn/follow-up mode, agent ID, and whether spec, repository orientation, findings, or gate failures were sent |
 | `coder_result` | changed files, claimed tests, disputes, and uncertainties |
@@ -39,17 +58,13 @@ Every event contains `ts`, `event`, and `iteration` (`null` before and after the
 
 ## 1. Set up
 
-1. Read and validate `.dev-loop/config.json`. Stop with a clear configuration error when its gate list is empty or required values are missing.
-2. Get the current branch before other workflow actions. Do not run on any configured protected branch unless the user explicitly overrides the warning. Otherwise propose the configured feature branch template with `{task_slug}` replaced.
-3. Verify the working tree is clean. If it is not, stop and ask how to handle the existing changes; never absorb them silently into the baseline.
-4. Record `git rev-parse HEAD` as `baseline_commit`. Create the session directory, `plan.json`, and the `session_start` event.
-5. Run every configured gate on the baseline. Abort and record `session_end` if any baseline gate fails.
-6. Read `SPECIFICATION.md` and build the detailed specification from current planning/specification context, referenced GitHub issues, referenced Jira issues, and repository evidence. If those sources are insufficient, inaccessible, conflicting, or materially ambiguous, launch its interactive specification-building workflow and obtain the required user decisions before dispatch.
-7. Write `<session-dir>/specification.json`, validate it with `validate-specification.mjs`, require no material open questions, mirror its criterion behavior strings into `plan.json.acceptance_criteria`, store its path in the plan, and include the complete frozen specification in the `plan` event. Do not send inferred implementation choices unless a source or compatibility constraint requires them.
-8. Inspect the smallest task-relevant repository surface and compile concise, non-normative repository orientation for the initial coder. Include only verified navigation and implementation evidence that reduces rediscovery: the repository root and platform, branch and baseline, prioritized read-first paths, relevant current or legacy flows, likely extension points, reusable tests or fakes, applicable gates, compatibility traps, and explicit uncertainties. Do not restate the specification, prescribe unsupported implementation choices, or create a separate context artifact, schema, validation step, or lifecycle. The frozen specification remains authoritative when orientation is incomplete or conflicts with it.
-9. Initialize the disputed-findings list as empty and set the plan `iteration_limit` to configured `max_review_iterations`.
+1. Require a preceding `plan_confirmation` for the exact currently displayed plan. Revalidate `.dev-loop/config.json`, branch, clean-tree state, and baseline commit. Do not run on a configured protected branch without explicit override. If repository state or evidence materially changes the approved plan, return to `awaiting_plan_approval`, display the replacement plan once, and obtain one new approval for it.
+2. Run every configured baseline gate as a separate process with its exact configured timeout. Do not batch gates or rerun a completed gate merely because another gate timed out. Abort and append `session_end` if any baseline gate fails.
+3. Materialize the approved plan as `<session-dir>/specification.json`, validate it with `validate-specification.mjs`, require no material open questions, mirror criterion behavior strings into `plan.json.acceptance_criteria`, store its path in the plan, and include the complete frozen specification plus baseline results in the `plan` event. Do not add inferred implementation choices after approval.
+4. Inspect the smallest task-relevant surface and compile concise, non-normative repository orientation for the initial coder. Include only verified navigation and implementation evidence that reduces rediscovery. The frozen specification remains authoritative.
+5. Initialize the disputed-findings list as empty, set `iteration_limit` from configured `max_review_iterations`, and set status to `in_progress`.
 
-If a session directory already represents unfinished work, verify its branch and baseline against Git, read the plan and log, and resume. Agent thread IDs are product-local hints only: never send a message to an ID created by another product or top-level session.
+If a session directory already represents unfinished work, verify its branch and baseline against Git, read the plan and log, and resume from its exact status. For `awaiting_plan_approval`, continue the single-plan approval protocol and never skip its required user decision. Agent thread IDs are product-local hints only: never send a message to an ID created by another product or top-level session.
 
 ### Reopen a legacy maxed-out session
 
@@ -66,7 +81,7 @@ After reopening, use the normal cap behavior. When the reset limit is reached, p
 
 ## 2. Implement
 
-On the first implementation round, spawn the configured coder with the complete frozen `specification.json` and the compiled repository orientation. Keep the orientation compact and label it non-normative. Store the coder's product and thread ID in `plan.json` as transient runtime metadata.
+Immediately before the first coder dispatch, set and persist `plan.json.iteration` to `1`. Spawn the configured coder with the complete frozen `specification.json` and the compiled repository orientation, and write `coder_dispatch` with iteration `1`. Keep the orientation compact and label it non-normative. Store the coder's product and thread ID in `plan.json` as transient runtime metadata.
 
 Within the same top-level session, keep the coder thread alive. For gate failures or review fixes, send a follow-up task to that same coder containing only:
 
@@ -101,11 +116,11 @@ Do not give the reviewer coder messages, orchestrator reasoning, previous verdic
 
 Write a `decision` event every round with real reasoning and one of: `iterate`, `approve`, `gate_retry`, `await_user`, `continue`, `reopen`, `stop`, `escalate`, or `abort`.
 
-- If blocking findings remain below the active `iteration_limit`, send them to the same coder and increment the review iteration.
+- If blocking findings remain below the active `iteration_limit`, write the `iterate` decision with the current iteration, increment and persist `plan.json.iteration` exactly once, then send the findings to the same coder. The follow-up `coder_dispatch` and all subsequent round events use the incremented iteration.
 - Evaluate coder disputes directly against the code. Record whether each justification was accepted.
 - Minor findings never trigger another iteration. Apply only unambiguous, tightly scoped minor fixes in one coder follow-up after approval, then rerun gates once.
 - When blocking findings remain and `iteration` reaches the active `iteration_limit`, do not finish automatically. Set plan status to `awaiting_user`, set `next_action` to ask whether to continue or stop, and append an `await_user` decision containing the remaining blockers, gate state, current iteration, and active limit. Do not append `session_end` while waiting.
-- Ask the user whether to continue or stop the loop. If the user continues without specifying a count, authorize one additional review iteration; if they specify a positive count, extend by that count. Record a `continue` decision, increase and persist `iteration_limit`, restore status to `in_progress`, then forward the current blockers to the coder. Ask again whenever the extended limit is reached.
+- Ask the user whether to continue or stop the loop. If the user continues without specifying a count, authorize one additional review iteration; if they specify a positive count, extend by that count. Record a `continue` decision with the current iteration, increase and persist `iteration_limit`, restore status to `in_progress`, increment and persist `plan.json.iteration` exactly once, then forward the current blockers to the coder using that new iteration. Ask again whenever the extended limit is reached.
 - If the user stops, record a `stop` decision, set status to `max_iterations`, append `session_end`, and report the unresolved blockers. If the user has not answered, leave the session resumable in `awaiting_user`.
 - Stop early for oscillation when the same finding returns in two non-consecutive rounds.
 - Reject unrelated diff growth as scope creep.

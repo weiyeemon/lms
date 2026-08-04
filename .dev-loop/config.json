@@ -1,7 +1,7 @@
 {
   "$schema": "../.agent-workflow/schemas/config.schema.json",
   "schema_version": 1,
-  "workflow_version": "0.7.0",
+  "workflow_version": "0.8.0",
   "max_review_iterations": 4,
   "protected_branches": [
     "main",
