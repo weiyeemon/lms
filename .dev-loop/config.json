@@ -12,6 +12,11 @@
   "feature_branch_template": "feature/{task_slug}",
   "gates": [
     {
+      "name": "tests",
+      "command": "npm.cmd test",
+      "timeout_seconds": 120
+    },
+    {
       "name": "lint",
       "command": "npm.cmd run lint",
       "timeout_seconds": 120
@@ -28,7 +33,10 @@
     }
   ],
   "test_integrity": {
-    "paths": [],
+    "paths": [
+      "__tests__",
+      "vitest.config.mts"
+    ],
     "allow_existing_test_changes": false
   }
 }
