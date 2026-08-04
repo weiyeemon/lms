@@ -1,7 +1,7 @@
 {
   "$schema": "../.agent-workflow/schemas/config.schema.json",
   "schema_version": 1,
-  "workflow_version": "0.7.0",
+  "workflow_version": "0.8.0",
   "max_review_iterations": 4,
   "protected_branches": [
     "main",
@@ -11,6 +11,11 @@
   ],
   "feature_branch_template": "feature/{task_slug}",
   "gates": [
+    {
+      "name": "tests",
+      "command": "npm.cmd test",
+      "timeout_seconds": 120
+    },
     {
       "name": "lint",
       "command": "npm.cmd run lint",
@@ -28,7 +33,10 @@
     }
   ],
   "test_integrity": {
-    "paths": [],
+    "paths": [
+      "__tests__",
+      "vitest.config.mts"
+    ],
     "allow_existing_test_changes": false
   }
 }
