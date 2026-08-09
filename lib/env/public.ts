@@ -24,7 +24,10 @@ function readSupabaseUrl(source: EnvSource) {
   const value = readRequiredEnv(source, publicEnvKeys.supabaseUrl);
   const parsed = new URL(value);
 
-  if (parsed.protocol !== "https:") {
+  const isLocalHttp =
+    parsed.protocol === "http:" &&
+    ["localhost", "127.0.0.1"].includes(parsed.hostname);
+  if (parsed.protocol !== "https:" && !isLocalHttp) {
     throw new Error(`${publicEnvKeys.supabaseUrl} must use https`);
   }
 

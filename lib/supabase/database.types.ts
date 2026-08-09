@@ -407,6 +407,16 @@ export type Database = {
         Args: Record<string, never>;
         Returns: unknown;
       };
+      submit_leave_request: {
+        Args: {
+          p_leave_type_id: string;
+          p_start_date: string;
+          p_end_date: string;
+          p_leave_unit: LeaveUnit;
+          p_reason: string | null;
+        };
+        Returns: string;
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

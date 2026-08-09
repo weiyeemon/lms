@@ -12,6 +12,16 @@ const migration = readFileSync(
   "utf8",
 );
 
+const submissionMigration = readFileSync(
+  join(
+    process.cwd(),
+    "supabase",
+    "migrations",
+    "202608090001_submit_leave_request.sql",
+  ),
+  "utf8",
+);
+
 const requiredTables = [
   "employees",
   "leave_types",
@@ -77,5 +87,29 @@ describe("LMS data security migration", () => {
     expect(migration).toContain("public_holidays_admin_delete");
     expect(migration).toContain("notification_delivery_admin_insert");
     expect(migration).toContain("with check (public.current_employee_is_admin())");
+  });
+});
+
+describe("leave request submission migration", () => {
+  test("defines an authenticated atomic submission function", () => {
+    expect(submissionMigration).toContain(
+      "create or replace function public.submit_leave_request(",
+    );
+    expect(submissionMigration).toContain("security definer");
+    expect(submissionMigration).toContain("auth.uid() is null");
+    expect(submissionMigration).toContain("for update");
+  });
+
+  test("calculates working days and protects balances", () => {
+    expect(submissionMigration).toContain("generate_series(");
+    expect(submissionMigration).toContain("extract(isodow from selected_day)");
+    expect(submissionMigration).toContain("public.public_holidays");
+    expect(submissionMigration).toContain("Insufficient leave balance.");
+    expect(submissionMigration).toContain("pending_days = pending_days + v_requested_days");
+  });
+
+  test("prevents overlapping requests", () => {
+    expect(submissionMigration).toContain("daterange(leave_requests.start_date");
+    expect(submissionMigration).toContain("request_status in ('pending', 'approved')");
   });
 });

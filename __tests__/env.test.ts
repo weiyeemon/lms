@@ -26,6 +26,18 @@ describe("public environment validation", () => {
     });
   });
 
+  test("allows HTTP only for local Supabase development", () => {
+    expect(
+      getPublicEnv({
+        NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:54321",
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: "local-anon-key",
+      }),
+    ).toEqual({
+      supabaseUrl: "http://127.0.0.1:54321",
+      supabaseAnonKey: "local-anon-key",
+    });
+  });
+
   test("reads browser configuration from literal NEXT_PUBLIC keys", () => {
     vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", validPublicEnv.NEXT_PUBLIC_SUPABASE_URL);
     vi.stubEnv(
