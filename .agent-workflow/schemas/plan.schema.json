@@ -7,7 +7,7 @@
     "workflow_version": { "type": "string", "minLength": 1 },
     "session_id": { "type": "string", "minLength": 1 },
     "task": { "type": "string", "minLength": 1 },
-    "status": { "enum": ["awaiting_plan_approval", "planned", "in_progress", "awaiting_user", "approved", "max_iterations", "escalated", "aborted"] },
+    "status": { "enum": ["planned", "in_progress", "awaiting_user", "approved", "max_iterations", "escalated", "aborted"] },
     "branch": { "type": "string", "minLength": 1 },
     "baseline_commit": { "type": "string", "minLength": 1 },
     "acceptance_criteria": { "type": "array", "items": { "type": "string", "minLength": 1 } },

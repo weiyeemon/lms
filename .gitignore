@@ -51,4 +51,3 @@ outputs/
 supabase/.temp/
 /playwright-report/
 /test-results/
-package-lock.json
