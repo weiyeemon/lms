@@ -1,41 +1,41 @@
 {
   "schema_version": 1,
-  "kit_version": "0.7.0",
+  "kit_version": "0.8.0",
   "products": [
     "claude",
     "codex"
   ],
   "managed_files": {
     ".agent-workflow/CODER.md": "1a32b95db26190570af4f13973e3c3c23bb874c56b1901ed4fc5580dcb91b978",
-    ".agent-workflow/DEV_LOOP.md": "4d7a0ccb639b9a2a9efc911cb315147803130e065551e8f108238a945d69e28c",
+    ".agent-workflow/DEV_LOOP.md": "52fcfca2971c3509d9f301ed1daa3d27fc9752355b925543f2d92defd604be78",
     ".agent-workflow/GATE_SETUP.md": "e46ad5e04d9825d80703860ec6f73ccaba2df7bef4cf02f743901dfb98bb9238",
-    ".agent-workflow/PLAN.template.json": "a17da8cd771c13ddccda9fd5358b903923fde103a4a87a9e46238033e4e7e36b",
+    ".agent-workflow/PLAN.template.json": "b85d644519de616a40484fbe8b46d7020b588740494ffa1848f097eba32cb13b",
     ".agent-workflow/REVIEWER.md": "ebfd5ff0007588caa4aca32aa597113598a1d0564682fbf16f70829e1e469bc3",
     ".agent-workflow/schemas/config.schema.json": "6d7e3afeb84feb0b246366b6131bebfc74999b7cb01983a049abeb95fbffdf52",
-    ".agent-workflow/schemas/event.schema.json": "a89c60158118ea134bc7d4965c069a2be315264ef1e3327e837d7d4d1790db86",
-    ".agent-workflow/schemas/plan.schema.json": "b9a3577b350579b6cff4cab0fed5fb9855e51d81ff97530a86900f509604cd56",
+    ".agent-workflow/schemas/event.schema.json": "4660fc62aafb1f61f7d020768ca8edb55d440fe8ab76ad7a51d4ad53d8a4cda9",
+    ".agent-workflow/schemas/plan.schema.json": "8059e49455327b5e14af996bcf448f74c095e50104103ccfc2fc8ea48a27e8f3",
     ".agent-workflow/schemas/specification.schema.json": "2eb3de1731d648a1426dd0229857b3c42e6dae7534b0d02b70305bad8aa679dc",
     ".agent-workflow/schemas/usage.schema.json": "068d6b2831949a327ffb51e4b2abf9e5327e93cf4be6ae2361cf5e749e24803f",
     ".agent-workflow/schemas/verdict.schema.json": "23745fb8279620dcad4e8dc26b13c726e8e722ae44ce1add978450e8cfac656f",
-    ".agent-workflow/scripts/append-event.mjs": "cce36a4c376488ac8a64d4f35bc12986dc87ca5fa50b9c373d98cc993278d636",
-    ".agent-workflow/scripts/validate-session.mjs": "8b2aaecf9ec3c48bdd922c7f294fd2c6b6307bdd3188b5c04f51d3b421c22f47",
+    ".agent-workflow/scripts/append-event.mjs": "2cd3a16fa6d79e7fdee3d7ababb97619fc74e2db455b1ac421eb05b691d7c72c",
+    ".agent-workflow/scripts/validate-session.mjs": "24bf50b6fdd9eb51dba7f9ffe03d4b6f8507f2b9797f668b7313899d3fa37bd1",
     ".agent-workflow/scripts/validate-specification.mjs": "32b0bcbfe100c32917c5d3cd01d258da12f7992542aa26c7dddb7abd36225154",
     ".agent-workflow/scripts/validate-verdict.mjs": "b12d0f96f361767b3d5a85ce1c1729b09ec0d7fa0e6d8ae876dae455ff2a895c",
     ".agent-workflow/SPECIFICATION.md": "722338bff05009677ab29004cf83afc97aab61b68788bccfe783a99717ed61f7",
     ".agent-workflow/SPECIFICATION.template.json": "3f23eca16e41fd4b7ba2b08b881d4a21b5ddde0afae0fad15f97f64b82cd1a1b",
-    ".agents/skills/dev-loop/agents/openai.yaml": "b895502616671cf243207b0b53eec34d781efd6790ba1a9eb726568273c91ce0",
-    ".agents/skills/dev-loop/SKILL.md": "ef9c5e155329c96195e8bc3368d9ea56ccc0f45c9c23e909603a10452cfcf921",
+    ".agents/skills/dev-loop/agents/openai.yaml": "0f5ea6f164369ecbd9a2b26a6343a153c00041cb741d97cebb527619526097d4",
+    ".agents/skills/dev-loop/SKILL.md": "3e40a664ccc568bbe272176df49d59d1585a124deef0bb76e6e833eb0ecf5033",
     ".agents/skills/setup-gates/agents/openai.yaml": "dab1ff213c6220fb0705ad927779aa4cc84ac7cd29d21d53e8ba84b352e8e1b6",
     ".agents/skills/setup-gates/SKILL.md": "c04e47116a97a7e8a67a41e8c69fd73369dbea2c8ae3d73583f19f5d36299f87",
     ".claude/agents/dev-loop-coder.md": "03f1d160b17ed42aa215baaf60aee0e0e08e58691db86391a22d238ad0d82528",
     ".claude/agents/dev-loop-reviewer.md": "12bae368c8139e25b504aa2245d2645e5f0923c75d2252c2ecaaff262bb285ea",
-    ".claude/skills/dev-loop/SKILL.md": "948ae08606fe35e2a184c161bf8f01558ab28d043dfb3de1c4bdfa550c4d44f8",
+    ".claude/skills/dev-loop/SKILL.md": "d27c286e672b3c626d075a75b57419c467f5d72d7ca5314923d86c1a7c6651c2",
     ".claude/skills/setup-gates/SKILL.md": "de139b901d9ab0bf5d9c0892f3db93112cad11eafcb92ca9ba56dbea5d098c5f",
     ".codex/agents/dev-loop-coder.toml": "5477ad36da9960e7e2b53ed6a7ea7c0e87a09f78d31f1524ec401e2ae469de08",
     ".codex/agents/dev-loop-reviewer.toml": "a005831d443b28c24f1334dd0f128801a3e101e4e6fd159980243b166ba25ba0"
   },
   "managed_blocks": {
-    "AGENTS.md": "ced3a3e0d6ed78d83de22239711aa7b764281d9947795976e488f6cf686367fb",
-    "CLAUDE.md": "0b5c4ad7d31a6e12126109210e2bbfc33649001b7ab2ca9b710fe443745fc15e"
+    "AGENTS.md": "b3984f796b38a1b0075dc326ef586015f394a6c9162bafb11147b2683507c7d7",
+    "CLAUDE.md": "4963981c56b17bce06372ab9f2b617ae6973d5db11e218a052074348d1591e2b"
   }
 }

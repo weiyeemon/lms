@@ -45,3 +45,4 @@ next-env.d.ts
 # generated local analysis artifacts
 .codex-analysis/
 outputs/
+package-lock.json
